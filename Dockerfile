@@ -1,2 +1,2 @@
 FROM alpine:latest
-ENTRYPOINT ["bash", "-c", "echo test"]
+ENTRYPOINT ["bash", "-c", "echo test 2"]
