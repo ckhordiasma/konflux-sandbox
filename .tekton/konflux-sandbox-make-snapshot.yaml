@@ -10,6 +10,7 @@ metadata:
   labels:
     appstudio.openshift.io/application: konflux-sandbox
     appstudio.openshift.io/component: konflux-sandbox
+    pipelines.appstudio.openshift.io/type: build
   name: konflux-sandbox-make-snapshot
   namespace: rh-ee-ckodama-tenant
 spec:
