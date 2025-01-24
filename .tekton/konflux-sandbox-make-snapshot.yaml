@@ -17,7 +17,7 @@ metadata:
 spec:
   params:
   - name: git-url
-    value: 'https://github.com/ckhordiasma/nightly-ec-notifier/'
+    value: 'https://github.com/ckhordiasma/nightly-ec-notifier'
   - name: revision
     value: 'main'
   pipelineSpec:
