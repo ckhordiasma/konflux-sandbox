@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/ckhordiasma/konflux-sandbox?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "main"
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: konflux-sandbox
+    appstudio.openshift.io/component: konflux-sandbox
+  name: konflux-sandbox-make-snapshot
+  namespace: rh-ee-ckodama-tenant
+spec:
+  params:
+  - name: git-url
+    value: 'https://github.com/ckhordiasma/nightly-ec-notifier/'
+  - name: revision
+    value: 'main'
+  pipelineSpec:
+    description: this pipeline creates snapshots from a known image repo. 
+    params:
+    - description: Source Repository URL
+      name: git-url
+      type: string
+    results:
+    - description: ""
+      name: IMAGE_URL
+      value: $(tasks.build-image-index.results.IMAGE_URL)
+    tasks:
+    - name: clone-repository
+      params:
+      - name: url
+        value: $(params.git-url)
+      - name: revision
+        value: $(params.revision)
+      taskRef:
+        params:
+        - name: name
+          value: git-clone
+        - name: bundle
+          value: quay.io/konflux-ci/tekton-catalog/task-git-clone:0.1
+        - name: kind
+          value: task
+        resolver: bundles
+      workspaces:
+      - name: ssh-directory
+        workspace: git-ssh-auth
+  taskRunTemplate: {}
+  workspaces:
+  - name: git-ssh-auth
+    secret:
+      secretName: 'rhods-devops-infra-git'
+status: {}
